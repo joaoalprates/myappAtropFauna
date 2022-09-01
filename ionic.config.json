@@ -1,0 +1,7 @@
+{
+  "name": "myappAtropFauna",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
