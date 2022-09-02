@@ -1,20 +1,38 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Blank
+    <ion-title class="ion-text-center" size="small">
+      CONTROLE DE ATROPELAMENTO<br/> DE FAUNA
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+<ion-content>
+
+  <ion-refresher slot="fixed">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+
+
+<!-- List of Text Items -->
+<ion-list>
+  <ion-item>
+    <ion-avatar slot="start">
+      <img src="./assets/img/no-image-icon.png" />
+    </ion-avatar>
+    <ion-label>
+      <h2>Tartaruga</h2>
+      <h3>BR-290/RS</h3>
+      <p>01/09/2022 10:45</p>
+    </ion-label>
+  </ion-item>
+</ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="add" [routerLink]="['/cadastro']"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
 </ion-content>

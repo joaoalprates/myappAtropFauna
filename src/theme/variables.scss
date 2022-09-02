@@ -234,3 +234,15 @@
     --ion-card-background: #1e1e1e;
   }
 }
+
+.img-fit {
+  object-fit: cover;
+}
+
+ion-list-header {
+  .label {
+    font-weight: bold;
+  }
+  border-bottom: 1px solid #dedede;
+  background-color: #fcfcfc !important;
+}

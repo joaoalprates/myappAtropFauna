@@ -1,0 +1,147 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title class="ion-text-center" size="small">
+      CONTROLE DE ATROPELAMENTO<br/> DE FAUNA
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div>
+
+    <div class="flex justify-content-space-between ion-margin-top relative">
+      <div class="absolute full-width line"></div>
+      <div class="flex flex-column justify-content-center full-width"
+        *ngFor="let slide of slides; let index = index; let first = first; let last = last;">
+        <span [ngClass]="{ 'align-self-end': last, 'align-self-center': (!first && !last) }"
+          class="flex flex-column align-items-center justify-content-center bold text-medium radius"
+          style="width: 30px; height: 30px;"
+          [style.background]="slide === currentSlide ? 'var(--ion-color-primary)':'var(--ion-color-light-shade)'"
+          [style.color]="slide === currentSlide ? 'var(--ion-color-light)':'var(--ion-color-dark)'"
+          [ngClass]="{ 'align-self-end': last, 'align-self-center': (!first && !last) }">
+          {{ index + 1 }}
+        </span>
+        <span [style.color]="slide === currentSlide ? 'var(--ion-color-primary)':'var(--ion-color-medium)'"
+          [ngClass]="{ 'align-self-end': last, 'align-self-center': (!first && !last) }"
+          class="flex text-medium bold ion-margin-vertical">
+          {{ slide }}
+        </span>
+      </div>
+    </div>
+
+    <ion-slides [options]="slidesOpts" (ionSlideDidChange)="onSlidesDidChange()"
+      (ionSlideWillChange)="onSlidesChanged()">
+      <ng-container *ngFor="let slide of slides">
+        <ion-slide>
+
+          <div class="full-width ion-text-start">
+
+            <form [formGroup]="fotosForm" #fotosFormRef="ngForm" novalidate *ngIf="slide === 'Fotos'">
+              <ion-label position="stacked">Espaço para fotos</ion-label>
+
+            </form>
+
+            <form [formGroup]="dadosAnimalForm" #dadosAnimalFormRef="ngForm" novalidate *ngIf="slide === 'Dados animal'">
+              <ion-row>
+                <ion-col>
+                  <ion-item lines="none">
+                    <ion-label position="stacked">Espécie</ion-label>
+                    <ion-input type="text" formControlName="especie"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-item class="item-select" lines="none">
+                    <ion-label position="stacked">Sexo</ion-label>
+                    <select class="text-small" formControlName="sexo">
+                      <option *ngFor="let sexo of sexos" [value]="sexo.value">
+                        {{ sexo.text }}
+                      </option>
+                    </select>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-item class="item-select" lines="none">
+                    <ion-label position="stacked">Estado de decomposição</ion-label>
+                    <select class="text-small" formControlName="estadoDecomposicao">
+                      <option *ngFor="let estadoDecomposicao of estadosDecomposicao" [value]="estadoDecomposicao.value">
+                        {{ estadoDecomposicao.text }}
+                      </option>
+                    </select>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </form>
+
+            <form [formGroup]="dadosLocalForm" #dadosLocalFormRef="ngForm" novalidate *ngIf="slide === 'Dados local'">
+              <ion-row>
+                <ion-col>
+                  <ion-item lines="none">
+                    <ion-label position="stacked">Rodovia</ion-label>
+                    <ion-input type="text" formControlName="rodovia"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-item lines="none">
+                    <ion-label position="stacked">Sentido</ion-label>
+                    <ion-input type="text" formControlName="sentido"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-item class="item-select" lines="none">
+                    <ion-label position="stacked">Lado</ion-label>
+                    <select class="text-small" formControlName="lado">
+                      <option *ngFor="let lado of lados" [value]="lado.value">
+                        {{ lado.text }}
+                      </option>
+                    </select>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-item class="item-select" lines="none">
+                    <ion-label position="stacked">Alimento na pista</ion-label>
+                    <select class="text-small" formControlName="alimentoPista">
+                      <option *ngFor="let alimentoPista of alimentosPista" [value]="alimentoPista.value">
+                        {{ alimentoPista.text }}
+                      </option>
+                    </select>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </form>
+          </div>
+        </ion-slide>
+      </ng-container>
+    </ion-slides>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <div class="full-width flex align-items-center justify-content-space-between">
+      <ion-button style="width: 80px;" strong shape="round" color="medium" [routerLink]="['/home']">
+        <span>Cancelar</span>
+        <ion-icon slot="start" name="chevron-back"></ion-icon>
+      </ion-button>
+      <ion-button style="width: 80px;" strong shape="round" color="dark"
+        [style.visibility]="(isBeginning) ? 'hidden' : ''" (click)="onBackButtonTouched()">
+        <span>Voltar</span>
+        <ion-icon slot="start" name="chevron-back"></ion-icon>
+      </ion-button>
+      <ion-button style="width: 80px;" strong shape="round" color="primary"
+        (click)="onNextButtonTouched()">
+        <span>{{isEnd ? 'Salvar' : 'Próximo'}}</span>
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>

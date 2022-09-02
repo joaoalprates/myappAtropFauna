@@ -1,0 +1,5 @@
+<ul padding-top class="progress-indicator">
+  <li *ngFor="let s of iterableSteps" [class.active]="active === s">
+    <span (click)="goToStep(s)" class="bubble">{{s + 1}}</span>
+  </li>
+</ul>
