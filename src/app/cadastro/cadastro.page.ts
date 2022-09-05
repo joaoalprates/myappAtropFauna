@@ -1,6 +1,6 @@
 import { HomePage } from './../home/home.page';
 import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
-import { ActionSheetController, IonContent, IonSlides, NavController } from '@ionic/angular';
+import { ActionSheetController, IonContent, IonSlides, NavController, ToastController } from '@ionic/angular';
 import { AbstractControl, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NavigationExtras, Router } from '@angular/router';
@@ -47,6 +47,7 @@ export class CadastroPage implements OnInit {
     private router: Router,
     private zone: NgZone,
     private atropService: AtropService,
+    private toastController: ToastController,
     ) {
   }
 
@@ -147,6 +148,16 @@ export class CadastroPage implements OnInit {
     ];
   }
 
+  async presentToast() {
+    const toast = await this.toastController.create({
+      message: 'Registro salvo!',
+      duration: 1500,
+      position: 'bottom'
+    });
+
+    await toast.present();
+  }
+
   onSaved() {
 
     this.dadosLocalFormRef.onSubmit(undefined);
@@ -165,9 +176,10 @@ export class CadastroPage implements OnInit {
       this.atropService.createAtrop(this.atropelamento)
       .subscribe((response) => {
         this.zone.run(() => {
-          this.setupForm();
-          this.buildSlides();
-          this.router.navigate(['\home']);
+            this.setupForm();
+            this.buildSlides();
+            this.presentToast();
+            this.router.navigate(['\home']);
         });
       });
     }

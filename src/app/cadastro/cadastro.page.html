@@ -38,7 +38,16 @@
           <div class="full-width ion-text-start">
 
             <form [formGroup]="fotosForm" #fotosFormRef="ngForm" novalidate *ngIf="slide === 'Fotos'">
-              <ion-label position="stacked">Espaço para fotos</ion-label>
+              <ion-row>
+                <ion-col>
+                  <ion-label position="stacked">Espaço para fotos</ion-label>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-text position="stacked">Etapa destinada a utilização de um recurso nativo que será apresentado no M5</ion-text>
+                </ion-col>
+              </ion-row>
             </form>
 
             <form [formGroup]="dadosAnimalForm" #dadosAnimalFormRef="ngForm" novalidate *ngIf="slide === 'Dados animal'">
