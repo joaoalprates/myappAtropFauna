@@ -17,14 +17,14 @@
 
 <!-- List of Text Items -->
 <ion-list>
-  <ion-item>
+  <ion-item *ngFor="let atrop of atrops">
     <ion-avatar slot="start">
       <img src="./assets/img/no-image-icon.png" />
     </ion-avatar>
     <ion-label>
-      <h2>Tartaruga</h2>
-      <h3>BR-290/RS</h3>
-      <p>01/09/2022 10:45</p>
+      <h2>{{atrop.especie}}</h2>
+      <h3>{{atrop.rodovia}}</h3>
+      <p>{{atrop.dataFormatada}}</p>
     </ion-label>
   </ion-item>
 </ion-list>

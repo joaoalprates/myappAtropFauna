@@ -1,7 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { HomePage } from './../home/home.page';
+import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActionSheetController, IonContent, IonSlides, NavController } from '@ionic/angular';
 import { AbstractControl, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { NavigationExtras, Router } from '@angular/router';
+import { AtropService } from './../services/api.service';
 
 @Component({
   selector: 'app-cadastro',
@@ -34,10 +37,17 @@ export class CadastroPage implements OnInit {
   public estadosDecomposicao = [];
   public lados = [];
   public alimentosPista = [];
+  public atropelamento: any;
+  public atropelamentoLista = [];
 
-  constructor(private actionSheetCtrl: ActionSheetController,
-    private navCtrl: NavController,
-    private sanitizer: DomSanitizer) {
+  constructor(
+    private actionSheetCtrl: ActionSheetController,
+    public navCtrl: NavController,
+    private sanitizer: DomSanitizer,
+    private router: Router,
+    private zone: NgZone,
+    private atropService: AtropService,
+    ) {
   }
 
   get dadosAnimalEspecie(): AbstractControl {
@@ -52,20 +62,20 @@ export class CadastroPage implements OnInit {
     return this.dadosAnimalForm.get('estadoDecomposicao');
   }
 
-  get dadosAnimalRodovia(): AbstractControl {
-    return this.dadosAnimalForm.get('rodovia');
+  get dadosLocalRodovia(): AbstractControl {
+    return this.dadosLocalForm.get('rodovia');
   }
 
-  get dadosAnimalSentido(): AbstractControl {
-    return this.dadosAnimalForm.get('sentido');
+  get dadosLocalSentido(): AbstractControl {
+    return this.dadosLocalForm.get('sentido');
   }
 
-  get dadosAnimalLado(): AbstractControl {
-    return this.dadosAnimalForm.get('lado');
+  get dadosLocalLado(): AbstractControl {
+    return this.dadosLocalForm.get('lado');
   }
 
-  get dadosAnimalAlimentoPista(): AbstractControl {
-    return this.dadosAnimalForm.get('alimentoPista');
+  get dadosLocalAlimentoPista(): AbstractControl {
+    return this.dadosLocalForm.get('alimentoPista');
   }
 
   setupForm() {
@@ -73,13 +83,13 @@ export class CadastroPage implements OnInit {
 
     });
     this.dadosAnimalForm = new FormGroup({
-      especie: new FormControl(''),
+      especie: new FormControl('', Validators.required),
       sexo: new FormControl(1),
       estadoDecomposicao: new FormControl(1),
     });
     this.dadosLocalForm = new FormGroup({
-      rodovia: new FormControl(''),
-      sentido: new FormControl(''),
+      rodovia: new FormControl('', Validators.required),
+      sentido: new FormControl('', Validators.required),
       lado: new FormControl(1),
       alimentoPista: new FormControl(1),
     });
@@ -137,36 +147,51 @@ export class CadastroPage implements OnInit {
     ];
   }
 
+  onSaved() {
+
+    this.dadosLocalFormRef.onSubmit(undefined);
+
+    if (this.dadosLocalForm.valid) {
+      this.atropelamento = {
+        especie: this.dadosAnimalForm.get('especie').value,
+        sexo: this.dadosAnimalForm.get('sexo').value,
+        estadoDecomposicao: this.dadosAnimalForm.get('estadoDecomposicao').value,
+        rodovia: this.dadosLocalForm.get('rodovia').value,
+        sentido: this.dadosLocalForm.get('sentido').value,
+        lado: this.dadosLocalForm.get('lado').value,
+        alimentoPista: this.dadosLocalForm.get('alimentoPista').value,
+      };
+
+      this.atropService.createAtrop(this.atropelamento)
+      .subscribe((response) => {
+        this.zone.run(() => {
+          this.setupForm();
+          this.buildSlides();
+          this.router.navigate(['\home']);
+        });
+      });
+    }
+  }
+
   onNextButtonTouched() {
 
-    console.log(this.currentSlide);
     if (this.currentSlide === 'Fotos') {
 
       this.fotosFormRef.onSubmit(undefined);
 
-        this.ionSlides.slideNext();
-        this.ionContent.scrollToTop();
+      this.ionSlides.slideNext();
+      this.ionContent.scrollToTop();
 
     } else if (this.currentSlide === 'Dados animal') {
 
       this.dadosAnimalFormRef.onSubmit(undefined);
-
+      if (this.dadosAnimalForm.valid) {
         this.ionSlides.slideNext();
         this.ionContent.scrollToTop();
-
+      }
     } else if (this.currentSlide === 'Dados local') {
 
-      this.dadosLocalFormRef.onSubmit(undefined);
-
-      if (this.dadosLocalForm.valid) {
-        this.navCtrl.navigateRoot('/thanks', {
-          animated: true,
-          animationDirection: 'forward',
-        });
-      }
-
     }  else {
-
       this.ionSlides.slideNext();
       this.ionContent.scrollToTop();
     }
