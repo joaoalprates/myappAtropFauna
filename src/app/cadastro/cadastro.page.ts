@@ -5,6 +5,7 @@ import { AbstractControl, FormControl, FormGroup, NgForm, Validators } from '@an
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NavigationExtras, Router } from '@angular/router';
 import { AtropService } from './../services/api.service';
+import { PhotoService } from './../services/photo.service';
 
 @Component({
   selector: 'app-cadastro',
@@ -39,6 +40,7 @@ export class CadastroPage implements OnInit {
   public alimentosPista = [];
   public atropelamento: any;
   public atropelamentoLista = [];
+  public photo = '';
 
   constructor(
     private actionSheetCtrl: ActionSheetController,
@@ -48,7 +50,9 @@ export class CadastroPage implements OnInit {
     private zone: NgZone,
     private atropService: AtropService,
     private toastController: ToastController,
+    public photoService: PhotoService,
     ) {
+
   }
 
   get dadosAnimalEspecie(): AbstractControl {
@@ -122,7 +126,11 @@ export class CadastroPage implements OnInit {
     this.ionContent.scrollToTop();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+
+    await this.photoService.clearStorage();
+    await this.photoService.loadSaved();
+
     this.setupForm();
     this.buildSlides();
 
@@ -148,6 +156,12 @@ export class CadastroPage implements OnInit {
     ];
   }
 
+  addPhotoToGallery() {
+    this.photoService.addNewToGallery().then((photo) => {
+      this.photo = photo;
+    });
+  }
+
   async presentToast() {
     const toast = await this.toastController.create({
       message: 'Registro salvo!',
@@ -171,11 +185,13 @@ export class CadastroPage implements OnInit {
         sentido: this.dadosLocalForm.get('sentido').value,
         lado: this.dadosLocalForm.get('lado').value,
         alimentoPista: this.dadosLocalForm.get('alimentoPista').value,
+        foto: this.photo,
       };
 
       this.atropService.createAtrop(this.atropelamento)
       .subscribe((response) => {
         this.zone.run(() => {
+            this.photoService.clearStorage();
             this.setupForm();
             this.buildSlides();
             this.presentToast();
