@@ -47,6 +47,16 @@ export class PhotoService {
     }
   }
 
+  public async carregarFoto(filepath){
+    const readFile = await Filesystem.readFile({
+      path: filepath,
+      directory: FilesystemDirectory.Data
+    });
+
+  // Web platform only: Load the photo as base64 data
+    return `data:image/jpeg;base64,${readFile.data}`;
+  }
+
   public async addNewToGallery() {
     // Take a photo
     const capturedPhoto = await Camera.getPhoto({

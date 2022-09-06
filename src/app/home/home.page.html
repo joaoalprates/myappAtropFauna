@@ -19,7 +19,7 @@
 <ion-list>
   <ion-item *ngFor="let atrop of atrops">
     <ion-avatar slot="start">
-      <img src="./assets/img/no-image-icon.png" />
+      <img [src]="atrop.foto === '' || atrop.foto === null ? './assets/img/no-image-icon.png' : photoService.carregarFoto(atrop.foto)" />
     </ion-avatar>
     <ion-label>
       <h2>{{atrop.especie}}</h2>
