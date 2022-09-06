@@ -26,6 +26,7 @@ export class PhotoService {
   }
 
   public async loadSaved() {
+
     // Retrieve cached photo array data
     const photoList = await Storage.get({ key: this.fotoStorageTemp });
     this.photos = JSON.parse(photoList.value) || [];
@@ -43,6 +44,7 @@ export class PhotoService {
 
         // Web platform only: Load the photo as base64 data
         photo.webviewPath = `data:image/jpeg;base64,${readFile.data}`;
+
       }
     }
   }
@@ -74,7 +76,7 @@ export class PhotoService {
       value: JSON.stringify(this.photos)
     });
 
-    return this.photos[0].filepath;
+    return this.photos[0].webviewPath;
   }
 
   convertBlobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
